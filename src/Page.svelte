@@ -16,7 +16,7 @@
 
   $:even = (number % 2) == 0;
   $:zIndex = (even ? -number : number);
-  $:svg = `/documents/${doc}/${number}.svg`;
+  $:svg = `./documents/${doc}/${number}.svg`;
   $:left = even ? "50%" : `${(1 - progress) * 100}%`;
   $:width = even ? (1 - progress) * 50 : progress * 50;
   $:gradient = shadow ? (
