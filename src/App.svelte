@@ -1,7 +1,8 @@
 <svelte:window bind:innerWidth={width} bind:innerHeight={height}/>
 <svelte:body on:mousemove={handleMouse}/>
 
-<main style={`position: relative; width: ${w * 0.98}px; height: ${h * 0.98}px; overflow: hidden; z-index: -100000;`} bind:this={book}>
+<main style={`position: relative; width: ${w * 0.98}px; height: ${h * 0.98}px; z-index: -100000;`} bind:this={book}>
+	<doc id="book-shadow" style={`height: 100%; position: absolute; width: ${dropWidth}%; left: ${dropLeft}%; z-index: -100000;`}></doc>
 	{#each Array(pages) as _, i}
 		<Page
 			doc={doc} number={i}
@@ -28,6 +29,7 @@
 	const pages = Number.parseInt(params.get('pages'));
 	const color = params.get('shadow');
 	const intensity = Number.parseFloat(params.get('shadowIntensity'));
+	const initialProgress = Math.floor((Number.parseFloat(params.get('page')) || 0) * 0.5);
 	
 	let book;
 	
@@ -37,12 +39,23 @@
 	let turnDir = 0;
 	let hovering = false;
 	let resetting = false;
+	let dropWidth = 50;
+	let dropLeft = 50;
 
-	let progress = tweened(0, {
+	let progress = tweened(initialProgress, {
 		easing: cubicOut,
 		duration: (from, to) => (turning ? 1 : ((Math.abs(from - to) / speed) * 1000) + 1),
 	});
 	let current = 0;
+
+	updateShadow(initialProgress);
+	progress.subscribe(updateShadow);
+
+	function updateShadow(p) {
+		let v = Math.min(p, 1);
+		dropWidth = 50 + (Math.max(v - 0.5, 0) * 100);
+		dropLeft = 50 - (Math.max(v - 0.5, 0) * 100);
+	}
 
 	let prev = {x: 0, y: 0, down: false}
 	function handleMouse(e) {
@@ -147,5 +160,10 @@
 					-ms-user-select: none; /* Internet Explorer/Edge */
 							user-select: none; /* Non-prefixed version, currently
 																		supported by Chrome, Edge, Opera and Firefox */
+	}
+
+	#book-shadow {
+		-webkit-box-shadow: 5px 5px 30px 5px rgba(0,0,0,0.81); 
+		box-shadow: 5px 5px 30px 5px rgba(0,0,0,0.81);
 	}
 </style>
