@@ -1,14 +1,14 @@
 <svelte:window bind:innerWidth={width} bind:innerHeight={height}/>
 <svelte:body on:mousemove={handleMouse}/>
 
-<main style={`position: relative; width: ${w * 0.98}px; height: ${h * 0.98}px; z-index: -100000;`} bind:this={book}>
+<main style={`position: relative; width: ${w * scale}px; height: ${h * scale}px; z-index: -100000;`} bind:this={book}>
 	<doc id="book-shadow" style={`height: 100%; position: absolute; width: ${dropWidth}%; left: ${dropLeft}%; z-index: -100000;`}></doc>
 	{#each Array(pages) as _, i}
 		<Page
 			doc={doc} number={i}
 			shadow={!(i == 0 || (i == pages - 1 && (pages - 1) % 2) != 0)}
 			shadowColor={color} shadowIntensity={intensity}
-			progress={Math.max(Math.min($progress - Math.floor(i * 0.5), 1), 0)}  pageWidth={w * 0.98 * 0.5}
+			progress={Math.max(Math.min($progress - Math.floor(i * 0.5), 1), 0)}  pageWidth={w * scale * 0.5}
 		></Page>
 	{/each}
 	<div class="noselect" style={`z-index: ${pages + 1}; width: 3.5%; height: 100%; position: absolute; top: 0px; left: 0px;`} on:mousemove={handleMouse} on:mousedown={handleMouse} on:mouseup={handleMouse}></div>
@@ -30,6 +30,7 @@
 	const color = params.get('shadow');
 	const intensity = Number.parseFloat(params.get('shadowIntensity'));
 	const initialProgress = Math.floor((Number.parseFloat(params.get('page')) || 0) * 0.5);
+	const scale = Number.parseFloat(params.get('scale')) || 0.98;
 	
 	let book;
 	
@@ -163,7 +164,7 @@
 	}
 
 	#book-shadow {
-		-webkit-box-shadow: 5px 5px 30px 5px rgba(0,0,0,0.81); 
-		box-shadow: 5px 5px 30px 5px rgba(0,0,0,0.81);
+		-webkit-box-shadow: 5px 5px 20px 0px rgba(0,0,0,0.75);
+		box-shadow: 5px 5px 20px 0px rgba(0,0,0,0.75);
 	}
 </style>
