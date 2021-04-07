@@ -1,5 +1,5 @@
 <svelte:window bind:innerWidth={width} bind:innerHeight={height}/>
-<svelte:body on:mousemove={handleMouse}/>
+<svelte:body on:mousemove={handleMouse} on:touchmove={(e) => touchConversion(e)}/>
 
 <main style={`position: relative; width: ${w * scale}px; height: ${h * scale}px; z-index: -100000;`} bind:this={book}>
 	<doc id="book-shadow" style={`height: 100%; position: absolute; width: ${dropWidth}%; left: ${dropLeft}%; z-index: -100000;`}></doc>
@@ -11,11 +11,23 @@
 			progress={Math.max(Math.min($progress - Math.floor(i * 0.5), 1), 0)}  pageWidth={w * scale * 0.5}
 		></Page>
 	{/each}
-	<div class="noselect" style={`z-index: ${pages + 1}; width: 3.5%; height: 100%; position: absolute; top: 0px; left: 0px;`} on:mousemove={handleMouse} on:mousedown={handleMouse} on:mouseup={handleMouse}></div>
+	<div
+		class="noselect" style={`z-index: ${pages + 1}; width: 3.5%; height: 100%; position: absolute; top: 0px; left: 0px;`}
+		on:mousemove={handleMouse} on:mousedown={handleMouse} on:mouseup={handleMouse}
+		on:touchstart={(e) => touchConversion(e)} on:touchend={(e) => touchConversion(e, false)} on:touchmove={(e) => touchConversion(e)}
+	></div>
 	{#if turning}
-	<div class="noselect" style={`z-index: ${pages + 2}; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px;`} on:mousemove={handleMouse} on:mouseleave={handleMouse} on:mouseup={handleMouse}></div>
+	<div
+		class="noselect" style={`z-index: ${pages + 2}; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px;`}
+		on:mousemove={handleMouse} on:mouseleave={handleMouse} on:mouseup={handleMouse}
+		on:touchstart={(e) => touchConversion(e)} on:touchend={(e) => touchConversion(e, false)} on:touchmove={(e) => touchConversion(e)}
+	></div>
 	{/if}
-	<div class="noselect" style={`z-index: ${pages + 1}; width: 3.5%; height: 100%; position: absolute; top: 0px; left: 96.5%;`} on:mousemove={handleMouse} on:mousedown={handleMouse} on:mouseup={handleMouse}></div>
+	<div
+		class="noselect" style={`z-index: ${pages + 1}; width: 3.5%; height: 100%; position: absolute; top: 0px; left: 96.5%;`}
+		on:mousemove={handleMouse} on:mousedown={handleMouse} on:mouseup={handleMouse}
+		on:touchstart={(e) => touchConversion(e)} on:touchend={(e) => touchConversion(e, false)} on:touchmove={(e) => touchConversion(e)}
+	></div>
 </main>
 
 <script>
@@ -56,6 +68,14 @@
 		let v = Math.min(p, 1);
 		dropWidth = 50 + (Math.max(v - 0.5, 0) * 100);
 		dropLeft = 50 - (Math.max(v - 0.5, 0) * 100);
+	}
+
+	let prevTouch = {};
+	function touchConversion(e, down = true) {
+		var touch = e.touches.item(0);
+		if (touch == null) touch = prevTouch;
+		prevTouch = touch;
+		handleMouse({clientX: touch.clientX, clientY: touch.clientY, buttons: down ? 1 : 0});
 	}
 
 	let prev = {x: 0, y: 0, down: false}

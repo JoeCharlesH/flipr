@@ -608,7 +608,7 @@ var app = (function () {
     		}
 
     		if ($$self.$$.dirty & /*doc, number*/ 192) {
-    			$$invalidate(2, svg = `/documents/${doc}/${number}.svg`);
+    			$$invalidate(2, svg = `./documents/${doc}/${number}.svg`);
     		}
 
     		if ($$self.$$.dirty & /*even, progress*/ 4352) {
@@ -918,25 +918,25 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[27] = list[i];
-    	child_ctx[29] = i;
+    	child_ctx[44] = list[i];
+    	child_ctx[46] = i;
     	return child_ctx;
     }
 
-    // (5:1) {#each Array(pages) as _, i}
+    // (6:1) {#each Array(pages) as _, i}
     function create_each_block(ctx) {
     	let page;
     	let current;
 
     	page = new Page({
     			props: {
-    				doc: /*doc*/ ctx[7],
-    				number: /*i*/ ctx[29],
-    				shadow: !(/*i*/ ctx[29] == 0 || (/*i*/ ctx[29] == /*pages*/ ctx[8] - 1 && (/*pages*/ ctx[8] - 1) % 2) != 0),
-    				shadowColor: /*color*/ ctx[9],
-    				shadowIntensity: /*intensity*/ ctx[10],
-    				progress: Math.max(Math.min(/*$progress*/ ctx[6] - Math.floor(/*i*/ ctx[29] * 0.5), 1), 0),
-    				pageWidth: /*w*/ ctx[4] * 0.98 * 0.5
+    				doc: /*doc*/ ctx[9],
+    				number: /*i*/ ctx[46],
+    				shadow: !(/*i*/ ctx[46] == 0 || (/*i*/ ctx[46] == /*pages*/ ctx[10] - 1 && (/*pages*/ ctx[10] - 1) % 2) != 0),
+    				shadowColor: /*color*/ ctx[11],
+    				shadowIntensity: /*intensity*/ ctx[12],
+    				progress: Math.max(Math.min(/*$progress*/ ctx[8] - Math.floor(/*i*/ ctx[46] * 0.5), 1), 0),
+    				pageWidth: /*w*/ ctx[6] * /*scale*/ ctx[13] * 0.5
     			},
     			$$inline: true
     		});
@@ -951,8 +951,8 @@ var app = (function () {
     		},
     		p: function update(ctx, dirty) {
     			const page_changes = {};
-    			if (dirty & /*$progress*/ 64) page_changes.progress = Math.max(Math.min(/*$progress*/ ctx[6] - Math.floor(/*i*/ ctx[29] * 0.5), 1), 0);
-    			if (dirty & /*w*/ 16) page_changes.pageWidth = /*w*/ ctx[4] * 0.98 * 0.5;
+    			if (dirty[0] & /*$progress*/ 256) page_changes.progress = Math.max(Math.min(/*$progress*/ ctx[8] - Math.floor(/*i*/ ctx[46] * 0.5), 1), 0);
+    			if (dirty[0] & /*w*/ 64) page_changes.pageWidth = /*w*/ ctx[6] * /*scale*/ ctx[13] * 0.5;
     			page.$set(page_changes);
     		},
     		i: function intro(local) {
@@ -973,14 +973,14 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(5:1) {#each Array(pages) as _, i}",
+    		source: "(6:1) {#each Array(pages) as _, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (14:1) {#if turning}
+    // (19:1) {#if turning}
     function create_if_block(ctx) {
     	let div;
     	let mounted;
@@ -989,18 +989,21 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", "noselect svelte-1b0sgk0");
-    			attr_dev(div, "style", `z-index: ${/*pages*/ ctx[8] + 2}; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px;`);
-    			add_location(div, file, 14, 1, 770);
+    			attr_dev(div, "class", "noselect svelte-k34dbd");
+    			attr_dev(div, "style", `z-index: ${/*pages*/ ctx[10] + 2}; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px;`);
+    			add_location(div, file, 19, 1, 1068);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(div, "mousemove", /*handleMouse*/ ctx[12], false, false, false),
-    					listen_dev(div, "mouseleave", /*handleMouse*/ ctx[12], false, false, false),
-    					listen_dev(div, "mouseup", /*handleMouse*/ ctx[12], false, false, false)
+    					listen_dev(div, "mousemove", /*handleMouse*/ ctx[16], false, false, false),
+    					listen_dev(div, "mouseleave", /*handleMouse*/ ctx[16], false, false, false),
+    					listen_dev(div, "mouseup", /*handleMouse*/ ctx[16], false, false, false),
+    					listen_dev(div, "touchstart", /*touchstart_handler_1*/ ctx[22], false, false, false),
+    					listen_dev(div, "touchend", /*touchend_handler_1*/ ctx[23], false, false, false),
+    					listen_dev(div, "touchmove", /*touchmove_handler_2*/ ctx[24], false, false, false)
     				];
 
     				mounted = true;
@@ -1018,7 +1021,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(14:1) {#if turning}",
+    		source: "(19:1) {#if turning}",
     		ctx
     	});
 
@@ -1028,17 +1031,20 @@ var app = (function () {
     function create_fragment(ctx) {
     	let t0;
     	let main;
+    	let doc_1;
+    	let doc_1_style_value;
     	let t1;
-    	let div0;
     	let t2;
+    	let div0;
     	let t3;
+    	let t4;
     	let div1;
     	let main_style_value;
     	let current;
     	let mounted;
     	let dispose;
-    	add_render_callback(/*onwindowresize*/ ctx[13]);
-    	let each_value = Array(/*pages*/ ctx[8]);
+    	add_render_callback(/*onwindowresize*/ ctx[17]);
+    	let each_value = Array(/*pages*/ ctx[10]);
     	validate_each_argument(each_value);
     	let each_blocks = [];
 
@@ -1056,25 +1062,31 @@ var app = (function () {
     		c: function create() {
     			t0 = space();
     			main = element("main");
+    			doc_1 = element("doc");
+    			t1 = space();
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			t1 = space();
-    			div0 = element("div");
     			t2 = space();
-    			if (if_block) if_block.c();
+    			div0 = element("div");
     			t3 = space();
+    			if (if_block) if_block.c();
+    			t4 = space();
     			div1 = element("div");
-    			attr_dev(div0, "class", "noselect svelte-1b0sgk0");
-    			attr_dev(div0, "style", `z-index: ${/*pages*/ ctx[8] + 1}; width: 3.5%; height: 100%; position: absolute; top: 0px; left: 0px;`);
-    			add_location(div0, file, 12, 1, 545);
-    			attr_dev(div1, "class", "noselect svelte-1b0sgk0");
-    			attr_dev(div1, "style", `z-index: ${/*pages*/ ctx[8] + 1}; width: 3.5%; height: 100%; position: absolute; top: 0px; left: 96.5%;`);
-    			add_location(div1, file, 16, 1, 988);
-    			attr_dev(main, "style", main_style_value = `position: relative; width: ${/*w*/ ctx[4] * 0.98}px; height: ${/*h*/ ctx[5] * 0.98}px; overflow: hidden; z-index: -100000;`);
-    			add_location(main, file, 3, 0, 110);
+    			attr_dev(doc_1, "id", "book-shadow");
+    			attr_dev(doc_1, "style", doc_1_style_value = `height: 100%; position: absolute; width: ${/*dropWidth*/ ctx[4]}%; left: ${/*dropLeft*/ ctx[5]}%; z-index: -100000;`);
+    			attr_dev(doc_1, "class", "svelte-k34dbd");
+    			add_location(doc_1, file, 4, 1, 271);
+    			attr_dev(div0, "class", "noselect svelte-k34dbd");
+    			attr_dev(div0, "style", `z-index: ${/*pages*/ ctx[10] + 1}; width: 3.5%; height: 100%; position: absolute; top: 0px; left: 0px;`);
+    			add_location(div0, file, 13, 1, 705);
+    			attr_dev(div1, "class", "noselect svelte-k34dbd");
+    			attr_dev(div1, "style", `z-index: ${/*pages*/ ctx[10] + 1}; width: 3.5%; height: 100%; position: absolute; top: 0px; left: 96.5%;`);
+    			add_location(div1, file, 25, 1, 1424);
+    			attr_dev(main, "style", main_style_value = `position: relative; width: ${/*w*/ ctx[6] * /*scale*/ ctx[13]}px; height: ${/*h*/ ctx[7] * /*scale*/ ctx[13]}px; z-index: -100000;`);
+    			add_location(main, file, 3, 0, 151);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1082,38 +1094,51 @@ var app = (function () {
     		m: function mount(target, anchor) {
     			insert_dev(target, t0, anchor);
     			insert_dev(target, main, anchor);
+    			append_dev(main, doc_1);
+    			append_dev(main, t1);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].m(main, null);
     			}
 
-    			append_dev(main, t1);
-    			append_dev(main, div0);
     			append_dev(main, t2);
-    			if (if_block) if_block.m(main, null);
+    			append_dev(main, div0);
     			append_dev(main, t3);
+    			if (if_block) if_block.m(main, null);
+    			append_dev(main, t4);
     			append_dev(main, div1);
-    			/*main_binding*/ ctx[14](main);
+    			/*main_binding*/ ctx[28](main);
     			current = true;
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(window_1, "resize", /*onwindowresize*/ ctx[13]),
-    					listen_dev(document.body, "mousemove", /*handleMouse*/ ctx[12], false, false, false),
-    					listen_dev(div0, "mousemove", /*handleMouse*/ ctx[12], false, false, false),
-    					listen_dev(div0, "mousedown", /*handleMouse*/ ctx[12], false, false, false),
-    					listen_dev(div0, "mouseup", /*handleMouse*/ ctx[12], false, false, false),
-    					listen_dev(div1, "mousemove", /*handleMouse*/ ctx[12], false, false, false),
-    					listen_dev(div1, "mousedown", /*handleMouse*/ ctx[12], false, false, false),
-    					listen_dev(div1, "mouseup", /*handleMouse*/ ctx[12], false, false, false)
+    					listen_dev(window_1, "resize", /*onwindowresize*/ ctx[17]),
+    					listen_dev(document.body, "mousemove", /*handleMouse*/ ctx[16], false, false, false),
+    					listen_dev(document.body, "touchmove", /*touchmove_handler*/ ctx[18], false, false, false),
+    					listen_dev(div0, "mousemove", /*handleMouse*/ ctx[16], false, false, false),
+    					listen_dev(div0, "mousedown", /*handleMouse*/ ctx[16], false, false, false),
+    					listen_dev(div0, "mouseup", /*handleMouse*/ ctx[16], false, false, false),
+    					listen_dev(div0, "touchstart", /*touchstart_handler*/ ctx[19], false, false, false),
+    					listen_dev(div0, "touchend", /*touchend_handler*/ ctx[20], false, false, false),
+    					listen_dev(div0, "touchmove", /*touchmove_handler_1*/ ctx[21], false, false, false),
+    					listen_dev(div1, "mousemove", /*handleMouse*/ ctx[16], false, false, false),
+    					listen_dev(div1, "mousedown", /*handleMouse*/ ctx[16], false, false, false),
+    					listen_dev(div1, "mouseup", /*handleMouse*/ ctx[16], false, false, false),
+    					listen_dev(div1, "touchstart", /*touchstart_handler_2*/ ctx[25], false, false, false),
+    					listen_dev(div1, "touchend", /*touchend_handler_2*/ ctx[26], false, false, false),
+    					listen_dev(div1, "touchmove", /*touchmove_handler_3*/ ctx[27], false, false, false)
     				];
 
     				mounted = true;
     			}
     		},
-    		p: function update(ctx, [dirty]) {
-    			if (dirty & /*doc, pages, color, intensity, Math, $progress, w*/ 2000) {
-    				each_value = Array(/*pages*/ ctx[8]);
+    		p: function update(ctx, dirty) {
+    			if (!current || dirty[0] & /*dropWidth, dropLeft*/ 48 && doc_1_style_value !== (doc_1_style_value = `height: 100%; position: absolute; width: ${/*dropWidth*/ ctx[4]}%; left: ${/*dropLeft*/ ctx[5]}%; z-index: -100000;`)) {
+    				attr_dev(doc_1, "style", doc_1_style_value);
+    			}
+
+    			if (dirty[0] & /*doc, pages, color, intensity, $progress, w, scale*/ 16192) {
+    				each_value = Array(/*pages*/ ctx[10]);
     				validate_each_argument(each_value);
     				let i;
 
@@ -1127,7 +1152,7 @@ var app = (function () {
     						each_blocks[i] = create_each_block(child_ctx);
     						each_blocks[i].c();
     						transition_in(each_blocks[i], 1);
-    						each_blocks[i].m(main, t1);
+    						each_blocks[i].m(main, t2);
     					}
     				}
 
@@ -1146,14 +1171,14 @@ var app = (function () {
     				} else {
     					if_block = create_if_block(ctx);
     					if_block.c();
-    					if_block.m(main, t3);
+    					if_block.m(main, t4);
     				}
     			} else if (if_block) {
     				if_block.d(1);
     				if_block = null;
     			}
 
-    			if (!current || dirty & /*w, h*/ 48 && main_style_value !== (main_style_value = `position: relative; width: ${/*w*/ ctx[4] * 0.98}px; height: ${/*h*/ ctx[5] * 0.98}px; overflow: hidden; z-index: -100000;`)) {
+    			if (!current || dirty[0] & /*w, h*/ 192 && main_style_value !== (main_style_value = `position: relative; width: ${/*w*/ ctx[6] * /*scale*/ ctx[13]}px; height: ${/*h*/ ctx[7] * /*scale*/ ctx[13]}px; z-index: -100000;`)) {
     				attr_dev(main, "style", main_style_value);
     			}
     		},
@@ -1180,7 +1205,7 @@ var app = (function () {
     			if (detaching) detach_dev(main);
     			destroy_each(each_blocks, detaching);
     			if (if_block) if_block.d();
-    			/*main_binding*/ ctx[14](null);
+    			/*main_binding*/ ctx[28](null);
     			mounted = false;
     			run_all(dispose);
     		}
@@ -1209,6 +1234,8 @@ var app = (function () {
     	const pages = Number.parseInt(params.get("pages"));
     	const color = params.get("shadow");
     	const intensity = Number.parseFloat(params.get("shadowIntensity"));
+    	const initialProgress = Math.floor((Number.parseFloat(params.get("page")) || 0) * 0.5);
+    	const scale = Number.parseFloat(params.get("scale")) || 0.98;
     	let book;
     	let speed = 0.1;
     	let width;
@@ -1217,15 +1244,40 @@ var app = (function () {
     	let turnDir = 0;
     	let hovering = false;
     	let resetting = false;
+    	let dropWidth = 50;
+    	let dropLeft = 50;
 
-    	let progress = tweened(0, {
+    	let progress = tweened(initialProgress, {
     		easing: cubicOut,
     		duration: (from, to) => turning ? 1 : Math.abs(from - to) / speed * 1000 + 1
     	});
 
     	validate_store(progress, "progress");
-    	component_subscribe($$self, progress, value => $$invalidate(6, $progress = value));
+    	component_subscribe($$self, progress, value => $$invalidate(8, $progress = value));
     	let current = 0;
+    	updateShadow(initialProgress);
+    	progress.subscribe(updateShadow);
+
+    	function updateShadow(p) {
+    		let v = Math.min(p, 1);
+    		$$invalidate(4, dropWidth = 50 + Math.max(v - 0.5, 0) * 100);
+    		$$invalidate(5, dropLeft = 50 - Math.max(v - 0.5, 0) * 100);
+    	}
+
+    	let prevTouch = {};
+
+    	function touchConversion(e, down = true) {
+    		var touch = e.touches.item(0);
+    		if (touch == null) touch = prevTouch;
+    		prevTouch = touch;
+
+    		handleMouse({
+    			clientX: touch.clientX,
+    			clientY: touch.clientY,
+    			buttons: down ? 1 : 0
+    		});
+    	}
+
     	let prev = { x: 0, y: 0, down: false };
 
     	function handleMouse(e) {
@@ -1332,6 +1384,17 @@ var app = (function () {
     		$$invalidate(1, height = window_1.innerHeight);
     	}
 
+    	const touchmove_handler = e => touchConversion(e);
+    	const touchstart_handler = e => touchConversion(e);
+    	const touchend_handler = e => touchConversion(e, false);
+    	const touchmove_handler_1 = e => touchConversion(e);
+    	const touchstart_handler_1 = e => touchConversion(e);
+    	const touchend_handler_1 = e => touchConversion(e, false);
+    	const touchmove_handler_2 = e => touchConversion(e);
+    	const touchstart_handler_2 = e => touchConversion(e);
+    	const touchend_handler_2 = e => touchConversion(e, false);
+    	const touchmove_handler_3 = e => touchConversion(e);
+
     	function main_binding($$value) {
     		binding_callbacks[$$value ? "unshift" : "push"](() => {
     			book = $$value;
@@ -1349,6 +1412,8 @@ var app = (function () {
     		pages,
     		color,
     		intensity,
+    		initialProgress,
+    		scale,
     		book,
     		speed,
     		width,
@@ -1357,8 +1422,13 @@ var app = (function () {
     		turnDir,
     		hovering,
     		resetting,
+    		dropWidth,
+    		dropLeft,
     		progress,
     		current,
+    		updateShadow,
+    		prevTouch,
+    		touchConversion,
     		prev,
     		handleMouse,
     		getX,
@@ -1379,11 +1449,14 @@ var app = (function () {
     		if ("turnDir" in $$props) turnDir = $$props.turnDir;
     		if ("hovering" in $$props) hovering = $$props.hovering;
     		if ("resetting" in $$props) resetting = $$props.resetting;
-    		if ("progress" in $$props) $$invalidate(11, progress = $$props.progress);
+    		if ("dropWidth" in $$props) $$invalidate(4, dropWidth = $$props.dropWidth);
+    		if ("dropLeft" in $$props) $$invalidate(5, dropLeft = $$props.dropLeft);
+    		if ("progress" in $$props) $$invalidate(14, progress = $$props.progress);
     		if ("current" in $$props) current = $$props.current;
+    		if ("prevTouch" in $$props) prevTouch = $$props.prevTouch;
     		if ("prev" in $$props) prev = $$props.prev;
-    		if ("w" in $$props) $$invalidate(4, w = $$props.w);
-    		if ("h" in $$props) $$invalidate(5, h = $$props.h);
+    		if ("w" in $$props) $$invalidate(6, w = $$props.w);
+    		if ("h" in $$props) $$invalidate(7, h = $$props.h);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -1391,12 +1464,12 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*height, width*/ 3) {
-    			$$invalidate(4, w = Math.min(height * (ratio * 2), width));
+    		if ($$self.$$.dirty[0] & /*height, width*/ 3) {
+    			$$invalidate(6, w = Math.min(height * (ratio * 2), width));
     		}
 
-    		if ($$self.$$.dirty & /*width, height*/ 3) {
-    			$$invalidate(5, h = Math.min(width / (ratio * 2), height));
+    		if ($$self.$$.dirty[0] & /*width, height*/ 3) {
+    			$$invalidate(7, h = Math.min(width / (ratio * 2), height));
     		}
     	};
 
@@ -1405,6 +1478,8 @@ var app = (function () {
     		height,
     		book,
     		turning,
+    		dropWidth,
+    		dropLeft,
     		w,
     		h,
     		$progress,
@@ -1412,9 +1487,21 @@ var app = (function () {
     		pages,
     		color,
     		intensity,
+    		scale,
     		progress,
+    		touchConversion,
     		handleMouse,
     		onwindowresize,
+    		touchmove_handler,
+    		touchstart_handler,
+    		touchend_handler,
+    		touchmove_handler_1,
+    		touchstart_handler_1,
+    		touchend_handler_1,
+    		touchmove_handler_2,
+    		touchstart_handler_2,
+    		touchend_handler_2,
+    		touchmove_handler_3,
     		main_binding
     	];
     }
@@ -1422,7 +1509,7 @@ var app = (function () {
     class App extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance, create_fragment, safe_not_equal, {});
+    		init(this, options, instance, create_fragment, safe_not_equal, {}, [-1, -1]);
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
